@@ -27,7 +27,7 @@ export default function LoginPage() {
       });
       const data = await res.json();
       if (!res.ok) throw new Error(data.error || 'Login failed');
-      login(data.token);
+      await login(data.token);
       navigate('/dashboard');
     } catch (err) {
       setError(err.message);
