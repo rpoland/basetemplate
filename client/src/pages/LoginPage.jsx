@@ -1,6 +1,10 @@
 import { useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext.jsx';
+import { Button } from '../components/ui/button.jsx';
+import { Input } from '../components/ui/input.jsx';
+import { Label } from '../components/ui/label.jsx';
+import { Card, CardHeader, CardTitle, CardContent, CardFooter } from '../components/ui/card.jsx';
 
 export default function LoginPage() {
   const { login } = useAuth();
@@ -33,79 +37,33 @@ export default function LoginPage() {
   };
 
   return (
-    <div style={styles.page}>
-      <form onSubmit={handleSubmit} style={styles.card}>
-        <h2 style={styles.title}>Sign in</h2>
-
-        {error && <p style={styles.error}>{error}</p>}
-
-        <label style={styles.label}>Email</label>
-        <input
-          style={styles.input}
-          type="email"
-          name="email"
-          value={form.email}
-          onChange={handleChange}
-          autoComplete="email"
-          required
-        />
-
-        <label style={styles.label}>Password</label>
-        <input
-          style={styles.input}
-          type="password"
-          name="password"
-          value={form.password}
-          onChange={handleChange}
-          autoComplete="current-password"
-          required
-        />
-
-        <button style={styles.button} type="submit" disabled={loading}>
-          {loading ? 'Signing in…' : 'Sign in'}
-        </button>
-
-        <p style={styles.footer}>
-          No account? <Link to="/register">Register</Link>
-        </p>
-      </form>
+    <div className="min-h-screen flex items-center justify-center bg-muted/40">
+      <Card className="w-full max-w-sm">
+        <CardHeader>
+          <CardTitle className="text-2xl text-center">Sign in</CardTitle>
+        </CardHeader>
+        <form onSubmit={handleSubmit}>
+          <CardContent className="flex flex-col gap-4">
+            {error && <p className="text-sm text-destructive">{error}</p>}
+            <div className="flex flex-col gap-1.5">
+              <Label htmlFor="email">Email</Label>
+              <Input id="email" type="email" name="email" value={form.email} onChange={handleChange} autoComplete="email" required />
+            </div>
+            <div className="flex flex-col gap-1.5">
+              <Label htmlFor="password">Password</Label>
+              <Input id="password" type="password" name="password" value={form.password} onChange={handleChange} autoComplete="current-password" required />
+            </div>
+          </CardContent>
+          <CardFooter className="flex flex-col gap-3">
+            <Button type="submit" className="w-full" disabled={loading}>
+              {loading ? 'Signing in…' : 'Sign in'}
+            </Button>
+            <p className="text-sm text-center text-muted-foreground">
+              No account? <Link to="/register" className="underline text-foreground">Register</Link>
+            </p>
+          </CardFooter>
+        </form>
+      </Card>
     </div>
   );
 }
-
-const styles = {
-  page: {
-    minHeight: '100vh',
-    display: 'flex',
-    alignItems: 'center',
-    justifyContent: 'center',
-    background: '#f3f4f6',
-  },
-  card: {
-    background: '#fff',
-    padding: '2rem',
-    borderRadius: '8px',
-    boxShadow: '0 1px 4px rgba(0,0,0,0.1)',
-    width: '100%',
-    maxWidth: '360px',
-    display: 'flex',
-    flexDirection: 'column',
-    gap: '0.5rem',
-  },
-  title:  { margin: '0 0 0.75rem', fontSize: '1.5rem', textAlign: 'center' },
-  error:  { color: '#dc2626', fontSize: '0.875rem', margin: 0 },
-  label:  { fontSize: '0.875rem', fontWeight: 500, color: '#374151' },
-  input:  { padding: '0.5rem 0.75rem', border: '1px solid #d1d5db', borderRadius: '6px', fontSize: '1rem' },
-  button: {
-    marginTop: '0.5rem',
-    padding: '0.625rem',
-    background: '#2563eb',
-    color: '#fff',
-    border: 'none',
-    borderRadius: '6px',
-    fontSize: '1rem',
-    fontWeight: 500,
-    cursor: 'pointer',
-  },
-  footer: { textAlign: 'center', fontSize: '0.875rem', margin: '0.5rem 0 0' },
-};
