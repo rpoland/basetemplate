@@ -20,8 +20,7 @@ router.post('/register', async (req, res) => {
     await client.query('BEGIN');
 
     const { rows: [user] } = await client.query(
-      `INSERT INTO users (first_name) VALUES ($1) RETURNING id, user_guid`,
-      [firstName || null]
+      `INSERT INTO users DEFAULT VALUES RETURNING id, user_guid`
     );
 
     const passwordHash = await bcrypt.hash(password, 12);

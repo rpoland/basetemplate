@@ -2,8 +2,8 @@
 -- Super admin: s@a.com / p
 
 WITH new_user AS (
-  INSERT INTO users (first_name, status)
-  VALUES ('Dev', 'active')
+  INSERT INTO users (status)
+  VALUES ('active')
   RETURNING id
 ),
 email_login AS (

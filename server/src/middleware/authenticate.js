@@ -13,7 +13,7 @@ export async function authenticate(req, res, next) {
 
     const { rows } = await pool.query(
       `SELECT
-         u.id, u.user_guid, u.first_name, u.status,
+         u.id, u.user_guid, u.status,
          bool_or(r.is_super) AS is_super,
          array_agg(DISTINCT p.name) FILTER (WHERE p.name IS NOT NULL) AS permissions
        FROM users u
@@ -22,7 +22,7 @@ export async function authenticate(req, res, next) {
        LEFT JOIN role_permissions rp ON rp.role_id = r.id
        LEFT JOIN permissions p ON p.id = rp.permission_id
        WHERE u.id = $1 AND u.status = 'active'
-       GROUP BY u.id, u.user_guid, u.first_name, u.status`,
+       GROUP BY u.id, u.user_guid, u.status`,
       [payload.uid]
     );
 

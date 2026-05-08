@@ -12,7 +12,6 @@ export default function AddUserPage() {
   const navigate = useNavigate();
 
   const [form, setForm] = useState({
-    first_name: '',
     email: '',
     password: '',
     status: 'active',
@@ -58,17 +57,6 @@ export default function AddUserPage() {
         <form onSubmit={handleSubmit}>
           <CardContent className="flex flex-col gap-4 pt-6">
             {error && <p className="text-sm text-destructive">{error}</p>}
-
-            <div className="flex flex-col gap-1.5">
-              <Label htmlFor="first_name">First name <span className="text-muted-foreground">(optional)</span></Label>
-              <Input
-                id="first_name"
-                name="first_name"
-                value={form.first_name}
-                onChange={handleChange}
-                autoComplete="off"
-              />
-            </div>
 
             <div className="flex flex-col gap-1.5">
               <Label htmlFor="email">Email</Label>

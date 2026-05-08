@@ -3,7 +3,6 @@ CREATE EXTENSION IF NOT EXISTS "pgcrypto";
 CREATE TABLE users (
   id          BIGSERIAL PRIMARY KEY,
   user_guid   UUID UNIQUE NOT NULL DEFAULT gen_random_uuid(),
-  first_name  VARCHAR(100),
   status      VARCHAR(20) NOT NULL DEFAULT 'active'
                 CHECK (status IN ('active', 'inactive', 'deleted')),
   created_at  TIMESTAMPTZ NOT NULL DEFAULT NOW()

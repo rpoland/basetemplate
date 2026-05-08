@@ -11,7 +11,6 @@ router.get('/me', authenticate, async (req, res, next) => {
   try {
     res.json({
       user_guid:   req.user.user_guid,
-      first_name:  req.user.first_name,
       is_super:    req.user.is_super,
       permissions: req.user.permissions || [],
     });

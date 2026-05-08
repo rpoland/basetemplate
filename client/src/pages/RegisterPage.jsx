@@ -6,7 +6,7 @@ import { Label } from '../components/ui/label.jsx';
 import { Card, CardHeader, CardTitle, CardContent, CardFooter } from '../components/ui/card.jsx';
 
 export default function RegisterPage() {
-  const [form, setForm] = useState({ firstName: '', email: '', password: '' });
+  const [form, setForm] = useState({ email: '', password: '' });
   const [error, setError] = useState('');
   const [success, setSuccess] = useState('');
   const [loading, setLoading] = useState(false);
@@ -47,10 +47,6 @@ export default function RegisterPage() {
           <CardContent className="flex flex-col gap-4">
             {error   && <p className="text-sm text-destructive">{error}</p>}
             {success && <p className="text-sm text-green-600">{success}</p>}
-            <div className="flex flex-col gap-1.5">
-              <Label htmlFor="firstName">First name <span className="text-muted-foreground">(optional)</span></Label>
-              <Input id="firstName" type="text" name="firstName" value={form.firstName} onChange={handleChange} autoComplete="given-name" />
-            </div>
             <div className="flex flex-col gap-1.5">
               <Label htmlFor="email">Email</Label>
               <Input id="email" type="email" name="email" value={form.email} onChange={handleChange} autoComplete="email" required />

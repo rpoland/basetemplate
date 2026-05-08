@@ -22,6 +22,7 @@ const NAV_ITEMS = [
     permission: 'users:',
     actions: [
       { label: 'Add User', path: '/users/adduser', permission: 'users:write' },
+      { label: 'Manage',   path: '/users/manage',  permission: 'users:' },
     ],
   },
 ];
