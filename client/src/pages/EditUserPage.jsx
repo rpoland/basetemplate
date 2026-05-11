@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useSearchParams } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext.jsx';
 import { Button } from '../components/ui/button.jsx';
 import { Input } from '../components/ui/input.jsx';
@@ -7,14 +7,16 @@ import { Label } from '../components/ui/label.jsx';
 import { Select } from '../components/ui/select.jsx';
 import { Card, CardContent, CardFooter } from '../components/ui/card.jsx';
 
-export default function AddUserPage() {
+export default function EditUserPage() {
   const { authFetch } = useAuth();
   const navigate = useNavigate();
+  const [searchParams] = useSearchParams();
+  const guid = searchParams.get('guid');
 
   const [form, setForm] = useState({
     email: '',
     password: '',
-    status: 'active',
+    status: '',
     role_id: '',
     scope_ids: [],
   });
@@ -22,18 +24,30 @@ export default function AddUserPage() {
   const [scopes, setScopes] = useState([]);
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
+  const [fetching, setFetching] = useState(true);
 
   useEffect(() => {
+    if (!guid) { navigate('/users/manage'); return; }
+
     Promise.all([
+      authFetch(`/api/users/${guid}`).then(r => r.json()),
       authFetch('/api/roles').then(r => r.json()),
       authFetch('/api/scopes').then(r => r.json()),
     ])
-      .then(([roleList, scopeList]) => {
+      .then(([user, roleList, scopeList]) => {
         setRoles(roleList);
         setScopes(scopeList);
+        setForm({
+          email: user.email ?? '',
+          password: '',
+          status: user.status ?? 'active',
+          role_id: user.role_id ? String(user.role_id) : '',
+          scope_ids: user.scope_ids ?? [],
+        });
       })
-      .catch(() => setError('Failed to load form data'));
-  }, [authFetch]);
+      .catch(() => setError('Failed to load user'))
+      .finally(() => setFetching(false));
+  }, [guid, authFetch, navigate]);
 
   const handleChange = (e) => setForm(f => ({ ...f, [e.target.name]: e.target.value }));
 
@@ -51,16 +65,20 @@ export default function AddUserPage() {
     setError('');
     setLoading(true);
     try {
-      const res = await authFetch('/api/users', {
-        method: 'POST',
-        body: JSON.stringify({
-          ...form,
-          role_id: Number(form.role_id),
-          scope_ids: form.scope_ids.map(Number),
-        }),
+      const body = {
+        email: form.email,
+        status: form.status,
+        role_id: Number(form.role_id),
+        scope_ids: form.scope_ids.map(Number),
+      };
+      if (form.password) body.password = form.password;
+
+      const res = await authFetch(`/api/users/${guid}`, {
+        method: 'PUT',
+        body: JSON.stringify(body),
       });
       const data = await res.json();
-      if (!res.ok) throw new Error(data.error || 'Failed to create user');
+      if (!res.ok) throw new Error(data.error || 'Failed to update user');
       navigate('/users/manage');
     } catch (err) {
       setError(err.message);
@@ -69,9 +87,11 @@ export default function AddUserPage() {
     }
   };
 
+  if (fetching) return <p className="text-sm text-muted-foreground">Loading…</p>;
+
   return (
     <div className="flex flex-col gap-6 max-w-lg">
-      <h1 className="text-2xl font-semibold">Add User</h1>
+      <h1 className="text-2xl font-semibold">Edit User</h1>
 
       <Card>
         <form onSubmit={handleSubmit}>
@@ -92,7 +112,7 @@ export default function AddUserPage() {
             </div>
 
             <div className="flex flex-col gap-1.5">
-              <Label htmlFor="password">Password</Label>
+              <Label htmlFor="password">New password <span className="text-muted-foreground">(leave blank to keep current)</span></Label>
               <Input
                 id="password"
                 name="password"
@@ -100,7 +120,6 @@ export default function AddUserPage() {
                 value={form.password}
                 onChange={handleChange}
                 autoComplete="new-password"
-                required
               />
             </div>
 
@@ -145,7 +164,7 @@ export default function AddUserPage() {
 
           <CardFooter className="flex gap-3">
             <Button type="submit" disabled={loading}>
-              {loading ? 'Creating…' : 'Create user'}
+              {loading ? 'Saving…' : 'Save changes'}
             </Button>
             <Button type="button" variant="outline" onClick={() => navigate('/users/manage')}>
               Cancel

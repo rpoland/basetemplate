@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext.jsx';
 import {
   Table, TableHeader, TableBody,
@@ -13,6 +14,7 @@ const STATUS_STYLES = {
 
 export default function ManageUsersPage() {
   const { authFetch } = useAuth();
+  const navigate = useNavigate();
   const [users, setUsers] = useState([]);
   const [error, setError] = useState('');
 
@@ -39,7 +41,11 @@ export default function ManageUsersPage() {
         </TableHeader>
         <TableBody>
           {users.map(user => (
-            <TableRow key={user.user_guid}>
+            <TableRow
+              key={user.user_guid}
+              className="cursor-pointer hover:bg-muted/50"
+              onClick={() => navigate(`/users/manage/user?guid=${user.user_guid}`)}
+            >
               <TableCell>{user.email ?? '—'}</TableCell>
               <TableCell>
                 <span className={`inline-flex items-center px-2 py-0.5 rounded text-xs font-medium capitalize ${STATUS_STYLES[user.status] ?? ''}`}>

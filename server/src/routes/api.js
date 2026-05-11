@@ -10,7 +10,8 @@ router.get('/ping', (req, res) => {
 router.get('/me', authenticate, async (req, res, next) => {
   try {
     res.json({
-      user_guid:   req.user.user_guid,
+      user_guid:   req.user.guid,
+      scope_id:    req.user.scope_id,
       is_super:    req.user.is_super,
       permissions: req.user.permissions || [],
     });

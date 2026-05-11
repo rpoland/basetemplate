@@ -13,16 +13,20 @@ export async function authenticate(req, res, next) {
 
     const { rows } = await pool.query(
       `SELECT
-         u.id, u.user_guid, u.status,
-         bool_or(r.is_super) AS is_super,
-         array_agg(DISTINCT p.name) FILTER (WHERE p.name IS NOT NULL) AS permissions
-       FROM users u
-       JOIN user_roles ur ON ur.user_id = u.id
-       JOIN roles r ON r.id = ur.role_id
-       LEFT JOIN role_permissions rp ON rp.role_id = r.id
-       LEFT JOIN permissions p ON p.id = rp.permission_id
-       WHERE u.id = $1 AND u.status = 'active'
-       GROUP BY u.id, u.user_guid, u.status`,
+         usr.id,
+         usr.guid,
+         usr.status,
+         usr.fk_scope_id              AS scope_id,
+         bool_or(r.is_super)          AS is_super,
+         array_agg(DISTINCT p.name)
+           FILTER (WHERE p.name IS NOT NULL) AS permissions
+       FROM "user" usr
+       JOIN user_roles         ur  ON ur.fk_user_id    = usr.id
+       JOIN roles              r   ON r.id              = ur.fk_role_id
+       LEFT JOIN role_permissions rp ON rp.fk_role_id  = r.id
+       LEFT JOIN permissions   p   ON p.id              = rp.fk_permission_id
+       WHERE usr.id = $1 AND usr.status = 'active'
+       GROUP BY usr.id, usr.guid, usr.status, usr.fk_scope_id`,
       [payload.uid]
     );
 

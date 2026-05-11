@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { NavLink, useLocation } from 'react-router-dom';
-import { LayoutDashboard, Users, Menu, X, LogOut } from 'lucide-react';
+import { LayoutDashboard, Users, Layers, Menu, X, LogOut } from 'lucide-react';
 import { useAuth } from '../context/AuthContext.jsx';
 import { Button } from './ui/button.jsx';
 import { cn } from '../lib/utils.js';
@@ -23,6 +23,15 @@ const NAV_ITEMS = [
     actions: [
       { label: 'Add User', path: '/users/adduser', permission: 'users:write' },
       { label: 'Manage',   path: '/users/manage',  permission: 'users:' },
+    ],
+  },
+  {
+    label: 'Scopes',
+    path: '/scopes',
+    icon: Layers,
+    permission: 'scope:',
+    actions: [
+      { label: 'Add Scope', path: '/scopes/add', permission: 'scope:write' },
     ],
   },
 ];

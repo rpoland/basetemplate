@@ -7,6 +7,9 @@ import DashboardPage from './pages/DashboardPage.jsx';
 import UsersPage from './pages/UsersPage.jsx';
 import AddUserPage from './pages/AddUserPage.jsx';
 import ManageUsersPage from './pages/ManageUsersPage.jsx';
+import EditUserPage from './pages/EditUserPage.jsx';
+import ScopesPage from './pages/ScopesPage.jsx';
+import AddScopePage from './pages/AddScopePage.jsx';
 
 function ProtectedRoute({ children, permission }) {
   const { isAuthenticated, loading, hasPermission } = useAuth();
@@ -33,7 +36,10 @@ export default function App() {
           <Route path="/dashboard" element={<ProtectedRoute><DashboardPage /></ProtectedRoute>} />
           <Route path="/users"        element={<ProtectedRoute permission="users:"><UsersPage /></ProtectedRoute>} />
           <Route path="/users/adduser" element={<ProtectedRoute permission="users:write"><AddUserPage /></ProtectedRoute>} />
-          <Route path="/users/manage"  element={<ProtectedRoute permission="users:"><ManageUsersPage /></ProtectedRoute>} />
+          <Route path="/users/manage"      element={<ProtectedRoute permission="users:"><ManageUsersPage /></ProtectedRoute>} />
+          <Route path="/users/manage/user" element={<ProtectedRoute permission="users:write"><EditUserPage /></ProtectedRoute>} />
+          <Route path="/scopes"            element={<ProtectedRoute permission="scope:read"><ScopesPage /></ProtectedRoute>} />
+          <Route path="/scopes/add"        element={<ProtectedRoute permission="scope:write"><AddScopePage /></ProtectedRoute>} />
           <Route path="*"          element={<Navigate to="/dashboard" replace />} />
         </Routes>
       </BrowserRouter>

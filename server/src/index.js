@@ -8,6 +8,7 @@ import apiRouter from './routes/api.js';
 import authRouter from './routes/auth.js';
 import usersRouter from './routes/users.js';
 import rolesRouter from './routes/roles.js';
+import scopesRouter from './routes/scopes.js';
 
 const app = express();
 const PORT = process.env.PORT || 3001;
@@ -21,6 +22,7 @@ app.use('/auth', authRouter);
 app.use('/api', apiRouter);
 app.use('/api/users', usersRouter);
 app.use('/api/roles', rolesRouter);
+app.use('/api/scopes', scopesRouter);
 
 app.use((err, req, res, next) => {
   console.error(err);
